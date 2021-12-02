@@ -1,0 +1,17 @@
+tcp:
+  port: 8090
+boss:
+  thread:
+    count: 2
+worker:
+  thread:
+    count: 8
+so:
+  backlog: 100
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://106.14.182.41:13306/ygame?useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true
+    username: raysdba
+    password: RaysDba2020!!
