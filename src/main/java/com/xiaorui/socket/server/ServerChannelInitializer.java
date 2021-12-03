@@ -1,5 +1,8 @@
 package com.xiaorui.socket.server;
 
+import com.xiaorui.socket.base.constant.CommonValue;
+import com.xiaorui.socket.base.message.codec.MessageDecoder;
+import com.xiaorui.socket.base.message.codec.MessageEncoder;
 import com.xiaorui.socket.hander.ServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -10,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * @author xp
- * @version 1.0.0
- */
+ * @Description 功能概述
+ * @Author xp
+ * @Date 2021/12/3 19:07
+ * @Version V1.0
+ **/
 @Component
 public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -25,38 +30,15 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
     @Autowired
     private ServerHandler serverHandler;
 
-    @Autowired
-
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast("decoder", stringDecoder);
-        pipeline.addLast("encoder", stringEncoder);
+        pipeline.addLast("encoder", new MessageEncoder());
+        pipeline.addLast("decoder", new MessageDecoder(CommonValue.MESSAGE_CODEC_MAX_FRAME_LENGTH,
+                CommonValue.MESSAGE_CODEC_LENGTH_FIELD_LENGTH, CommonValue.MESSAGE_CODEC_LENGTH_FIELD_OFFSET,
+                CommonValue.MESSAGE_CODEC_LENGTH_ADJUSTMENT, CommonValue.MESSAGE_CODEC_INITIAL_BYTES_TO_STRIP, false,
+                CommonValue.MESSAGE_TYPE_BYTE));
         pipeline.addLast("handler", serverHandler);
-    }
-
-    public StringDecoder getStringDecoder() {
-        return stringDecoder;
-    }
-
-    public void setStringDecoder(StringDecoder stringDecoder) {
-        this.stringDecoder = stringDecoder;
-    }
-
-    public StringEncoder getStringEncoder() {
-        return stringEncoder;
-    }
-
-    public void setStringEncoder(StringEncoder stringEncoder) {
-        this.stringEncoder = stringEncoder;
-    }
-
-    public ServerHandler getServerHandler() {
-        return serverHandler;
-    }
-
-    public void setServerHandler(ServerHandler serverHandler) {
-        this.serverHandler = serverHandler;
     }
 
 }

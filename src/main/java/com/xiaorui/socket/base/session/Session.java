@@ -64,7 +64,7 @@ public class Session {
         return user;
     }
 
-    Channel getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 

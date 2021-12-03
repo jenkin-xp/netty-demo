@@ -1,7 +1,8 @@
 package com.xiaorui.socket.hander;
 
-import com.xiaorui.socket.base.network.INetworkEventListener;
-import com.xiaorui.socket.base.session.SessionManager;
+import com.xiaorui.socket.base.message.IMessage;
+import com.xiaorui.socket.base.network.customer.INetworkConsumer;
+import com.xiaorui.socket.base.network.listener.INetworkEventListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.InetAddress;
 
 /**
  * @author xp
@@ -18,34 +18,24 @@ import java.net.InetAddress;
  */
 @Component
 @ChannelHandler.Sharable
-public class ServerHandler extends SimpleChannelInboundHandler<String> {
+public class ServerHandler extends SimpleChannelInboundHandler<IMessage> {
     private static final Logger log = LoggerFactory.getLogger(ServerHandler.class);
 
     @Autowired
     private INetworkEventListener networkEventListener;
+    @Autowired
+    private INetworkConsumer consumer;
 
     /**
      * 读取消息
      * @param ctx
-     * @param msg
+     * @param message
      * @throws Exception
      */
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, String msg)
+    public void channelRead0(ChannelHandlerContext ctx, IMessage message)
             throws Exception {
-        log.info("client msg:"+msg);
-        String clientIdToLong= ctx.channel().id().asLongText();
-        log.info("client long id:"+clientIdToLong);
-        String clientIdToShort= ctx.channel().id().asShortText();
-        log.info("client short id:"+clientIdToShort);
-        if(msg.indexOf("bye")!=-1){
-            //close
-            ctx.channel().close();
-        }else{
-            //send to client
-            ctx.channel().writeAndFlush("Yoru msg is:"+msg);
-        }
-
+        consumer.consume(message, ctx.channel());
     }
 
     /**
@@ -58,7 +48,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         log.info("RamoteAddress : " + ctx.channel().remoteAddress() + " active !");
         // 建立连接的时候创建session
         networkEventListener.onConnected(ctx);
-        ctx.channel().writeAndFlush( "Welcome to " + InetAddress.getLocalHost().getHostName() + " service!\n");
         super.channelActive(ctx);
     }
 
