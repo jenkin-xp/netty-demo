@@ -2,9 +2,12 @@ package com.xiaorui.socket.service;
 
 import com.xiaorui.socket.base.ResponseDTO;
 import com.xiaorui.socket.base.User;
+import com.xiaorui.socket.dto.user.UserLoginDTO;
 
 public interface UserService {
 
-    ResponseDTO<User> login(String username, String password);
+    ResponseDTO<User> login(UserLoginDTO userLoginDTO);
+
+    ResponseDTO<User> register(UserLoginDTO userLoginDTO);
 
 }

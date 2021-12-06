@@ -1,6 +1,6 @@
 package com.xiaorui.socket.base.message.impl;
 
-import com.xiaorui.socket.base.constant.CommonValue;
+import com.xiaorui.socket.base.constant.MessageValue;
 import com.xiaorui.socket.base.message.IMessage;
 
 /**
@@ -21,10 +21,10 @@ public class MessageFactory {
   public static IMessage create(String messageType) {
     IMessage iMessage = null;
     switch (messageType) {
-      case CommonValue.MESSAGE_TYPE_STRING:
+      case MessageValue.MESSAGE_TYPE_STRING:
         iMessage = new StringMessage();
         break;
-      case CommonValue.MESSAGE_TYPE_BYTE:
+      case MessageValue.MESSAGE_TYPE_BYTE:
         iMessage = new ByteMessage();
         break;
       default:

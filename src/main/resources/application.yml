@@ -9,6 +9,12 @@ worker:
 so:
   backlog: 100
 
+ssl:
+  open-status: false
+  type: JKS
+  path: D:\\workdir\\doc\\jks\\wss.jks
+  password: netty123
+
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver

@@ -1,4 +1,4 @@
-package com.xiaorui.socket.server;
+package com.xiaorui.socket.client;
 
 import com.xiaorui.socket.base.constant.MessageValue;
 import com.xiaorui.socket.base.message.codec.MessageDecoder;
@@ -10,16 +10,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @Description 功能概述
  * @Author xp
- * @Date 2021/12/3 19:07
+ * @Date 2021/12/6 15:08
  * @Version V1.0
  **/
-@Component
-public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
+public class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     @Autowired
     private StringDecoder stringDecoder;
@@ -38,8 +36,7 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
                 MessageValue.MESSAGE_CODEC_LENGTH_FIELD_LENGTH, MessageValue.MESSAGE_CODEC_LENGTH_FIELD_OFFSET,
                 MessageValue.MESSAGE_CODEC_LENGTH_ADJUSTMENT, MessageValue.MESSAGE_CODEC_INITIAL_BYTES_TO_STRIP, false,
                 MessageValue.MESSAGE_TYPE_BYTE));
-        pipeline.addLast("handler", serverHandler);
+        pipeline.addLast(new NettyClientHandler());
     }
 
 }
-

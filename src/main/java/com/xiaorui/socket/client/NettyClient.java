@@ -19,13 +19,7 @@ public class NettyClient {
             //设置相关参数
             bootstrap.group(group) //设置线程组
                     .channel(NioSocketChannel.class) // 使用NioSocketChannel作为客户端的通道实现
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            //加入处理器
-                            ch.pipeline().addLast(new NettyClientHandler());
-                        }
-                    });
+                    .handler(new ClientChannelInitializer());
 
             System.out.println("netty client start。。");
             //启动客户端去连接服务器端

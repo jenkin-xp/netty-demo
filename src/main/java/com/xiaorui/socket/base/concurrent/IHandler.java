@@ -1,8 +1,5 @@
 package com.xiaorui.socket.base.concurrent;
 
-
-import com.xiaorui.socket.base.concurrent.ICommand;
-
 public interface IHandler<T, V> extends ICommand {
 
     /**

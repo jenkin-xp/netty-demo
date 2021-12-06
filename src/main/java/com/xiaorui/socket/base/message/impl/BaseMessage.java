@@ -15,11 +15,15 @@ public abstract class BaseMessage implements IMessage {
     /**
      * 状态码
      */
-    protected short statusCode;
+    protected short statusCode = 0;
     /**
      * 内容长度
      */
     protected int length;
+
+    protected short SUCCESS_CODE = 0;
+
+    protected short FAIL_CODE = 1;
 
     @Override
     public short getMessageId() {

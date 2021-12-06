@@ -1,13 +1,21 @@
 package com.xiaorui.socket.base.session;
 
 import com.xiaorui.socket.base.User;
+import com.xiaorui.socket.base.message.IMessage;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * @Description 功能概述
+ * @Author xp
+ * @Date 2021/12/06 14:25
+ * @Version V1.0
+ **/
 public class SessionManager {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
@@ -24,6 +32,11 @@ public class SessionManager {
 
     public Session getSession(Integer userId) {
         return uidSessionMap.get(userId);
+    }
+
+    public Session[] getSessionArray() {
+        Collection<Session> values = uidSessionMap.values();
+        return values.toArray(new Session[values.size()]);
     }
 
     /**
@@ -92,6 +105,10 @@ public class SessionManager {
                 logger.info("Session unregister, userId={}, remove={}", user.getId(), remove);
             }
         }
+    }
+
+    public void sendMessage(Session session, IMessage iMessage) {
+        session.getChannel().writeAndFlush(iMessage);
     }
 
 }

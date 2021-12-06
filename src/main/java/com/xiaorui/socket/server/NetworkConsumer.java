@@ -2,7 +2,7 @@ package com.xiaorui.socket.server;
 
 import com.xiaorui.socket.base.concurrent.IHandler;
 import com.xiaorui.socket.base.concurrent.IMessageDictionary;
-import com.xiaorui.socket.base.constant.CommonValue;
+import com.xiaorui.socket.base.constant.MessageValue;
 import com.xiaorui.socket.base.message.IMessage;
 import com.xiaorui.socket.base.network.customer.INetworkConsumer;
 import com.xiaorui.socket.base.network.processor.IProcessor;
@@ -30,7 +30,7 @@ public class NetworkConsumer implements INetworkConsumer {
 
     @PostConstruct
     public void init() {
-        registerProcessor(CommonValue.QUEUE_LOGIC, new LogicProcessor());
+        registerProcessor(MessageValue.QUEUE_LOGIC, new LogicProcessor());
     }
 
     private void registerProcessor(int queueId, IProcessor processor) {
@@ -48,7 +48,7 @@ public class NetworkConsumer implements INetworkConsumer {
         IHandler handler = messageDictionary.findHandler(message.getMessageId());
         handler.setMessage(message);
         handler.setParam(session);
-        IProcessor processor = processors.get(CommonValue.QUEUE_LOGIC);
+        IProcessor processor = processors.get(MessageValue.QUEUE_LOGIC);
         processor.process(handler);
     }
 }

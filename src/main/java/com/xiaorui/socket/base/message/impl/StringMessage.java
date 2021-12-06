@@ -1,5 +1,7 @@
 package com.xiaorui.socket.base.message.impl;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.nio.charset.StandardCharsets;
 
 public class StringMessage extends BaseMessage {
@@ -9,7 +11,22 @@ public class StringMessage extends BaseMessage {
      */
     private String body;
 
+    private String errMsg;
+
     public StringMessage() {
+    }
+
+    public StringMessage(Object data) {
+        this.body = JSONObject.toJSONString(data);
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String errMsg) {
+        this.statusCode = FAIL_CODE;
+        this.errMsg = errMsg;
     }
 
     public StringMessage(short messageId) {
@@ -22,6 +39,10 @@ public class StringMessage extends BaseMessage {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public void setBody(Object body) {
+        this.body = JSONObject.toJSONString(body);
     }
 
     @Override

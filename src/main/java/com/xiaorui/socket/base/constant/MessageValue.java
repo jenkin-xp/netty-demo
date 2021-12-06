@@ -1,6 +1,6 @@
 package com.xiaorui.socket.base.constant;
 
-public class CommonValue {
+public class MessageValue {
 
     /**
      * 登录退出队列
@@ -11,6 +11,8 @@ public class CommonValue {
      * 业务队列
      */
     public static final int QUEUE_LOGIC = 2;
+
+    public static final boolean SSL_OPEN = false;
 
     public static final String MESSAGE_TYPE_STRING = "STRING";
     public static final String MESSAGE_TYPE_BYTE = "BYTE";
