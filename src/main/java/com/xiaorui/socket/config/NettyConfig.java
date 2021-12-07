@@ -1,6 +1,7 @@
 package com.xiaorui.socket.config;
 
 import com.xiaorui.socket.server.ServerChannelInitializer;
+import com.xiaorui.socket.server.channel.websocket.WebSocketChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -40,6 +41,9 @@ public class NettyConfig {
 
     @Autowired
     private ServerChannelInitializer serverChannelInitializer;
+
+    @Autowired
+    private WebSocketChannelInitializer webSocketChannelInitializer;
 
     //bootstrap配置
     @Bean(name = "serverBootstrap")

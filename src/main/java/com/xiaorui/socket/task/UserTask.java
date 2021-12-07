@@ -16,10 +16,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class UserTask {
 
-    @Scheduled(fixedRate = 10000)
+    private int times;
+
+    @Scheduled(fixedRate = 60000)
     public void printLoginUser() {
         Session[] sessionArray = SessionManager.getInstance().getSessionArray();
-        log.info("当前登录用户：[{}]", sessionArray.length);
+        log.info("task[{}], 当前登录用户：[{}]", ++ times, sessionArray.length);
     }
 
 }

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket</title>
+</head>
+<body>
+    <div>
+        <input type="text" id="text" />
+        <button type="button" id="btn">点击发送请求</button>
+    </div>
+</body>
+<script type="text/javascript"
+        src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+<script type="text/javascript">
+    const ws = new WebSocket("ws://127.0.0.1:8090");
+
+    $("#btn").click(function() {
+        let sendMsg = $("#text").val();
+        console.log("发送消息：" + sendMsg);
+        let body = {
+            'body' : sendMsg,
+            'messageId' : 4
+        }
+        ws.send(JSON.stringify(body));
+    })
+
+</script>
+</html>

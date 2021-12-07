@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.xiaorui.socket")
 @MapperScan(basePackages = {"com.xiaorui.socket.mapper"})
 @EnableScheduling
 public class NettyDemoApplication {
