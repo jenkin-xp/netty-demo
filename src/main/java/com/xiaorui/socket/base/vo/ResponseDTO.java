@@ -1,6 +1,7 @@
-package com.xiaorui.socket.base;
+package com.xiaorui.socket.base.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.xiaorui.socket.base.exception.ErrorCode;
 
 import java.io.Serializable;
 
@@ -12,8 +13,8 @@ public class ResponseDTO<T> implements Serializable {
     private static final String SUCCESS_MSG = "操作成功！";
     private int errCode;
     private String message;
+    private short messageId;
     private T data;
-    private String traceId;
 
     public ResponseDTO() {
         this.errCode = SUCCESS;
@@ -42,6 +43,14 @@ public class ResponseDTO<T> implements Serializable {
         this.data = data;
     }
 
+    public short getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(short messageId) {
+        this.messageId = messageId;
+    }
+
     public int getErrCode() {
         return this.errCode;
     }
@@ -64,14 +73,6 @@ public class ResponseDTO<T> implements Serializable {
 
     public void setData(T data) {
         this.data = data;
-    }
-
-    public String getTraceId() {
-        return traceId;
-    }
-
-    public void setTraceId(String traceId) {
-        this.traceId = traceId;
     }
 
     public String toString() {

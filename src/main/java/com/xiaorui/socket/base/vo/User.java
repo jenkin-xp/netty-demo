@@ -1,4 +1,4 @@
-package com.xiaorui.socket.base;
+package com.xiaorui.socket.base.vo;
 
 import lombok.Getter;
 import lombok.Setter;

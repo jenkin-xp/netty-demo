@@ -2,6 +2,7 @@ package com.xiaorui.socket.hander;
 
 import com.xiaorui.socket.base.concurrent.AbstractHandler;
 import com.xiaorui.socket.base.message.IMessage;
+import com.xiaorui.socket.base.message.impl.ByteMessage;
 import com.xiaorui.socket.base.message.impl.StringMessage;
 import com.xiaorui.socket.base.session.Session;
 import com.xiaorui.socket.service.UserService;
@@ -22,8 +23,11 @@ public class LeaveRoomHandler extends AbstractHandler<IMessage, Session> {
 
     @Override
     public void doAction() {
-        StringMessage stringMessage = (StringMessage) message;
+        ByteMessage byteMessage = (ByteMessage) message;
+        byte[] bodyByte = byteMessage.getBodyByte();
+        String body = new String(bodyByte);
+        System.out.println(body);
         Session session = param;
-        session.getChannel().writeAndFlush("responseDTO");
+
     }
 }

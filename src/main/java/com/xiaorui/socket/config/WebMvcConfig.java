@@ -54,8 +54,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return new HttpMessageConverters(converter);
     }
 
-//    @Override
-//    public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addViewController("/").setViewName("forward:index.html");
-//    }
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login").setViewName("forward:login.html");
+    }
 }

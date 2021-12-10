@@ -4,6 +4,7 @@ import com.xiaorui.socket.base.constant.MessageValue;
 import com.xiaorui.socket.base.message.codec.MessageDecoder;
 import com.xiaorui.socket.base.message.codec.MessageEncoder;
 import com.xiaorui.socket.hander.ServerHandler;
+import com.xiaorui.socket.server.channel.websocket.WebSocketHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -30,6 +31,9 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
     @Autowired
     private ServerHandler serverHandler;
 
+    @Autowired
+    private WebSocketHandler webSocketHandler;
+
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
@@ -39,6 +43,7 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
                 MessageValue.MESSAGE_CODEC_LENGTH_ADJUSTMENT, MessageValue.MESSAGE_CODEC_INITIAL_BYTES_TO_STRIP, false,
                 MessageValue.MESSAGE_TYPE_BYTE));
         pipeline.addLast("handler", serverHandler);
+        pipeline.addLast("webSocketHandler", webSocketHandler);
     }
 
 }

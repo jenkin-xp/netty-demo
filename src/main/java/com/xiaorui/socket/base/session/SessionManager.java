@@ -1,8 +1,11 @@
 package com.xiaorui.socket.base.session;
 
-import com.xiaorui.socket.base.User;
+import com.xiaorui.socket.base.vo.User;
 import com.xiaorui.socket.base.message.IMessage;
 import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,14 @@ public class SessionManager {
     public Session[] getSessionArray() {
         Collection<Session> values = uidSessionMap.values();
         return values.toArray(new Session[values.size()]);
+    }
+
+    public ChannelGroup getChannelGroup() {
+        ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+        for (Session session : uidSessionMap.values()) {
+            channelGroup.add(session.getChannel());
+        }
+        return channelGroup;
     }
 
     /**

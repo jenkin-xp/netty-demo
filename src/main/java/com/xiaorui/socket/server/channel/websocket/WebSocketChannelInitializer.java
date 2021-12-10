@@ -1,6 +1,7 @@
 package com.xiaorui.socket.server.channel.websocket;
 
 import com.xiaorui.socket.base.message.codec.IMessageToWebSocketFrameEncoder;
+import com.xiaorui.socket.base.message.codec.MessageEncoder;
 import com.xiaorui.socket.base.message.codec.WebSocketFrameToIMessageDecoder;
 import com.xiaorui.socket.base.util.SpringUtils;
 import com.xiaorui.socket.base.util.SslUtil;
@@ -9,11 +10,15 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
@@ -29,6 +34,9 @@ import javax.net.ssl.SSLException;
 @Component
 public class WebSocketChannelInitializer extends ChannelInitializer<SocketChannel> {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketChannelInitializer.class);
+
+    @Autowired
+    private WebSocketHandler webSocketHandler;
 
     @Override
     protected void initChannel(SocketChannel ch) {
@@ -56,14 +64,17 @@ public class WebSocketChannelInitializer extends ChannelInitializer<SocketChanne
             }
         }
 
-        pipeline.addLast("http-codec", new HttpServerCodec()); // Http消息编码解码
+        pipeline.addLast("http-decodec",new HttpRequestDecoder());
         pipeline.addLast("aggregator", new HttpObjectAggregator(65536)); // Http消息组装
+        pipeline.addLast("http-encodec",new HttpResponseEncoder());
         pipeline.addLast("http-chunked", new ChunkedWriteHandler()); // WebSocket通信支持
+        pipeline.addLast("http-request",new HttpRequestHandler("/ws"));
+//        pipeline.addLast("http-codec", new HttpServerCodec()); // Http消息编码解码
         // 消息编解码
         pipeline.addLast("encoder", new IMessageToWebSocketFrameEncoder());
-        pipeline.addLast("decoder", new WebSocketFrameToIMessageDecoder());
+//        pipeline.addLast("decoder", new WebSocketFrameToIMessageDecoder());
+        pipeline.addLast("WebSocket-protocol",new WebSocketServerProtocolHandler("/ws"));
 
-        WebSocketHandler webSocketHandler = SpringUtils.getObject(WebSocketHandler.class);
         pipeline.addLast(webSocketHandler);
 
     }

@@ -1,5 +1,7 @@
 package com.xiaorui.socket.hander;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xiaorui.socket.base.vo.RequestVO;
 import com.xiaorui.socket.base.message.IMessage;
 import com.xiaorui.socket.base.network.customer.INetworkConsumer;
 import com.xiaorui.socket.base.network.listener.INetworkEventListener;
@@ -35,7 +37,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<IMessage> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, IMessage message)
             throws Exception {
-        consumer.consume(message, ctx.channel());
+        byte[] bodyByte = message.getBodyByte();
+        String body = new String(bodyByte);
+        RequestVO requestVO = JSONObject.parseObject(body, RequestVO.class);
+        consumer.consume(requestVO, ctx.channel());
     }
 
     /**
@@ -45,7 +50,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<IMessage> {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("RamoteAddress : " + ctx.channel().remoteAddress() + " active !");
+        log.info("RemoteAddress : " + ctx.channel().remoteAddress() + " active !");
         // 建立连接的时候创建session
         networkEventListener.onConnected(ctx);
         super.channelActive(ctx);
@@ -70,7 +75,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<IMessage> {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        log.info("\nChannel [{}] is disconnected", ctx.channel().remoteAddress());
+        log.info("Channel [{}] is disconnected", ctx.channel().remoteAddress());
         // 关联连接关闭session
         networkEventListener.onDisconnected(ctx);;
         super.channelInactive(ctx);

@@ -1,5 +1,7 @@
 package com.xiaorui.socket.server.channel.websocket;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xiaorui.socket.base.vo.RequestVO;
 import com.xiaorui.socket.base.constant.MessageValue;
 import com.xiaorui.socket.base.exception.MessageCodecException;
 import com.xiaorui.socket.base.message.IMessage;
@@ -8,12 +10,14 @@ import com.xiaorui.socket.base.network.customer.INetworkConsumer;
 import com.xiaorui.socket.base.network.listener.INetworkEventListener;
 import com.xiaorui.socket.base.util.HttpResponseUtils;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -25,7 +29,9 @@ import org.springframework.stereotype.Component;
  * @Version V1.0
  **/
 @Component
+@Slf4j
 @Scope("prototype")
+@ChannelHandler.Sharable
 public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
     @Autowired
     private INetworkEventListener listener;
@@ -42,7 +48,11 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
           handleWebSocketMessage(ctx, msg);
         } else if (msg instanceof IMessage) {
           // 这里已经通过WebSocketFrameToIMessageDecoder进行解码，获得我们设置好的IMessage类了
-          consumer.consume((IMessage) msg, ctx.channel());
+            log.info("收到消息：[{}]", msg);
+            byte[] bodyByte = ((IMessage) msg).getBodyByte();
+            String body = new String(bodyByte);
+            RequestVO requestVO = JSONObject.parseObject(body, RequestVO.class);
+            consumer.consume(requestVO, ctx.channel());
         }
     }
 
@@ -58,9 +68,9 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
 
         // 如果HTTP解码失败，返回HHTP异常
         if (!request.decoderResult().isSuccess() || (!"websocket".equals(request.headers().get("Upgrade")))) {
-          HttpResponseUtils.sendHttpResponse(ctx, request,
-                  new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
-          return;
+            HttpResponseUtils.sendHttpResponse(ctx, request,
+                    new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
+            return;
         }
 
         // 正常WebSocket的Http连接请求，构造握手响应返回
@@ -68,9 +78,9 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 "ws://" + request.headers().get(HttpHeaderNames.HOST), null, false);
         WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(request);
         if (handshaker == null) { // 无法处理的websocket版本
-          WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
+            WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
         } else { // 向客户端发送websocket握手,完成握手
-          handshaker.handshake(ctx.channel(), request);
+            handshaker.handshake(ctx.channel(), request);
         }
     }
 
@@ -88,7 +98,10 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 MessageValue.MESSAGE_TYPE_BYTE);
         IMessage iMessage = messageDecoder.decodePub(ctx, content);
         // WebSocket接入
-        consumer.consume(iMessage, ctx.channel());
+        byte[] bodyByte = iMessage.getBodyByte();
+        String body = new String(bodyByte);
+        RequestVO requestVO = JSONObject.parseObject(body, RequestVO.class);
+        consumer.consume(requestVO, ctx.channel());
     }
 
     @Override

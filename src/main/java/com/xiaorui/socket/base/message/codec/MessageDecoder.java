@@ -1,11 +1,16 @@
 package com.xiaorui.socket.base.message.codec;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaorui.socket.base.message.IMessage;
 import com.xiaorui.socket.base.message.impl.MessageFactory;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.CompositeByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import com.xiaorui.socket.base.exception.MessageCodecException;
+
+import java.nio.charset.StandardCharsets;
 
 public class MessageDecoder extends LengthFieldBasedFrameDecoder {
 
@@ -52,13 +57,14 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
         }
 
         //注意在读的过程中，readIndex的指针也在移动
-        short messageId = in.readShort();
-        short statusCode = in.readShort();
-        int length = in.readInt();
-
-        if (in.readableBytes() < length) {
-            throw new MessageCodecException("body获取长度" + length + ",实际长度没有达到");
-        }
+//        short messageId = in.readShort();
+//        short statusCode = in.readShort();
+//        int length = in.readInt();
+//
+//        if (in.readableBytes() < length) {
+//            throw new MessageCodecException("body获取长度" + length + ",实际长度没有达到");
+//        }
+        int length = in.readableBytes();
         ByteBuf buf = in.readBytes(length);
         byte[] bodyByte = new byte[buf.readableBytes()];
         buf.readBytes(bodyByte);
@@ -66,11 +72,27 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
         //    body = new String(bodyByte, ConstantValue.PROJECT_CHARSET);
         //    CustomMsg customMsg = new CustomMsg(type, flag, length, body);
         //    StringMessage stringMessage = new StringMessage(length, messageId, statusCode, body);
-        iMessage.setMessageId(messageId);
-        iMessage.setStatusCode(statusCode);
-        iMessage.setLength(length);
+
+        String body = new String(bodyByte);
+        iMessage = JSONObject.parseObject(body, iMessage.getClass());
+        iMessage.setLength(bodyByte.length);
         iMessage.setBodyByte(bodyByte);
         return iMessage;
+    }
+
+    public static void main(String[] args) {
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeShort(1);
+        buf.writeShort(2);
+        buf.writeInt("hello".getBytes(StandardCharsets.UTF_8).length);
+        buf.writeBytes("hello".getBytes(StandardCharsets.UTF_8));
+        short messageId = buf.readShort();
+        short statusCode = buf.readShort();
+        int length = buf.readInt();
+        System.out.println(messageId);
+        System.out.println(statusCode);
+        System.out.println(length);
+        System.out.println(buf.readableBytes());
     }
 
 }

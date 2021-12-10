@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,9 +32,6 @@ public class NettyConfig {
     @Value("${worker.thread.count}")
     private int workerCount;
 
-    @Value("${tcp.port}")
-    private int tcpPort;
-
     @Value("${so.backlog}")
     private int backlog;
 
@@ -51,7 +47,7 @@ public class NettyConfig {
         ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup(), workerGroup())
                 .channel(NioServerSocketChannel.class)
-                .childHandler(serverChannelInitializer);
+                .childHandler(webSocketChannelInitializer);
         Map<ChannelOption<?>, Object> tcpChannelOptions = tcpChannelOptions();
         Set<ChannelOption<?>> keySet = tcpChannelOptions.keySet();
         for (ChannelOption option : keySet) {
@@ -68,11 +64,6 @@ public class NettyConfig {
     @Bean(name = "workerGroup", destroyMethod = "shutdownGracefully")
     public NioEventLoopGroup workerGroup() {
         return new NioEventLoopGroup(workerCount);
-    }
-
-    @Bean(name = "tcpSocketAddress")
-    public InetSocketAddress tcpPort() {
-        return new InetSocketAddress(tcpPort);
     }
 
     @Bean(name = "tcpChannelOptions")

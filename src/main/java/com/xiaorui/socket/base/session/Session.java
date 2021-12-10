@@ -1,6 +1,6 @@
 package com.xiaorui.socket.base.session;
 
-import com.xiaorui.socket.base.User;
+import com.xiaorui.socket.base.vo.User;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

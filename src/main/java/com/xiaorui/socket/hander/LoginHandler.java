@@ -1,14 +1,13 @@
 package com.xiaorui.socket.hander;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaorui.socket.base.ResponseDTO;
+import com.xiaorui.socket.base.vo.RequestVO;
+import com.xiaorui.socket.base.vo.ResponseDTO;
 import com.xiaorui.socket.base.concurrent.AbstractHandler;
 import com.xiaorui.socket.base.message.IMessage;
-import com.xiaorui.socket.base.message.impl.ByteMessage;
-import com.xiaorui.socket.base.message.impl.StringMessage;
 import com.xiaorui.socket.base.session.Session;
 import com.xiaorui.socket.base.session.SessionManager;
-import com.xiaorui.socket.base.User;
+import com.xiaorui.socket.base.vo.User;
 import com.xiaorui.socket.dto.user.UserLoginDTO;
 import com.xiaorui.socket.service.UserService;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -28,16 +27,14 @@ public class LoginHandler extends AbstractHandler<IMessage, Session> {
 
     @Override
     public void doAction() {
-        ByteMessage byteMessage = (ByteMessage) message;
-        byte[] bodyByte = byteMessage.getBodyByte();
-        String body = new String(bodyByte);
-        // body = body.substring(0, byteMessage.getLength());
-        UserLoginDTO userLoginDTO = JSONObject.parseObject(body, UserLoginDTO.class);
+        RequestVO requestVO = (RequestVO) message;
+        UserLoginDTO userLoginDTO = JSONObject.parseObject(requestVO.getBody(), UserLoginDTO.class);
         ResponseDTO<User> responseDTO = userService.login(userLoginDTO);
         Session session = param;
         if (responseDTO.getErrCode() == 0) {
             SessionManager.getInstance().register(session.getChannel(), responseDTO.getData());
         }
-        SessionManager.getInstance().sendMessage(session, new StringMessage(responseDTO.getData()));
+        responseDTO.setMessageId(requestVO.getMessageId());
+        session.getChannel().writeAndFlush(responseDTO);
     }
 }

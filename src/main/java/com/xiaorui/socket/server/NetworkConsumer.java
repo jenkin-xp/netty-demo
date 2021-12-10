@@ -1,9 +1,9 @@
 package com.xiaorui.socket.server;
 
+import com.xiaorui.socket.base.vo.RequestVO;
 import com.xiaorui.socket.base.concurrent.IHandler;
 import com.xiaorui.socket.base.concurrent.IMessageDictionary;
 import com.xiaorui.socket.base.constant.MessageValue;
-import com.xiaorui.socket.base.message.IMessage;
 import com.xiaorui.socket.base.network.customer.INetworkConsumer;
 import com.xiaorui.socket.base.network.processor.IProcessor;
 import com.xiaorui.socket.base.session.Session;
@@ -38,15 +38,15 @@ public class NetworkConsumer implements INetworkConsumer {
     }
 
     @Override
-    public void consume(IMessage message, Channel channel) {
+    public void consume(RequestVO requestVO, Channel channel) {
         Session session = SessionManager.getInstance().getSessionByChannel(channel);
         if (session == null) {
             logger.debug("consume session is not found");
             return;
         }
-        logger.info("messageId: [{}]", message.getMessageId());
-        IHandler handler = messageDictionary.findHandler(message.getMessageId());
-        handler.setMessage(message);
+        logger.info("messageId: [{}]", requestVO.getMessageId());
+        IHandler handler = messageDictionary.findHandler(requestVO.getMessageId());
+        handler.setMessage(requestVO);
         handler.setParam(session);
         IProcessor processor = processors.get(MessageValue.QUEUE_LOGIC);
         processor.process(handler);

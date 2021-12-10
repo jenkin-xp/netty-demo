@@ -9,7 +9,7 @@ public class StringMessage extends BaseMessage {
     /**
      * 发送内容
      */
-    private String body;
+    private String body = "";
 
     private String errMsg;
 

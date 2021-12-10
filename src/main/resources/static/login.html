@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>websocket</title>
+    <title>欢迎来到登录页面</title>
 </head>
 <body>
     <div>
-        <input type="text" id="text" />
-        <button type="button" id="btn">点击发送请求</button>
+        <label>用户名</label><input type="text" id="username" /><br>
+        <label>密码</label><input type="text" id="password" />
+        <button type="button" id="btn">登录</button>
     </div>
 </body>
 <script type="text/javascript"
@@ -23,18 +24,12 @@
 
     // 连接成功回调
     ws.onopen = function () {
-        ws.send(JSON.stringify("success"));
-        alert("连接成功");
-        let body = {
-            'body' : "hello",
-            'messageId' : 4
-        }
-
+        console.log("连接成功");
     }
 
     // 接受到消息回调
     ws.onmessage = function (event) {
-        console.log("接受到消息：" + event);
+        console.log("接受到消息：" + JSON.stringify(event.data));
     }
 
     ws.onclose = function () {
@@ -42,15 +37,17 @@
     }
 
     $("#btn").click(function() {
-        let sendMsg = $("#text").val();
-        console.log("发送消息：" + sendMsg);
+        let username = $("#username").val();
+        let password = $("#password").val();
+        let data = {username: username, password: password};
         let body = {
-            'body' : sendMsg,
-            'messageId' : 4
+            'body' : data,
+            'messageId' : 1
         }
         if (ws == null) {
             ws = new WebSocket("ws://" + host + "/ws");
         }
+        console.log("发送消息：" + JSON.stringify(body));
         ws.send(JSON.stringify(body));
     })
 

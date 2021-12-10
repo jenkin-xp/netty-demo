@@ -1,7 +1,7 @@
 package com.xiaorui.socket.service;
 
-import com.xiaorui.socket.base.ResponseDTO;
-import com.xiaorui.socket.base.User;
+import com.xiaorui.socket.base.vo.ResponseDTO;
+import com.xiaorui.socket.base.vo.User;
 import com.xiaorui.socket.dto.user.UserLoginDTO;
 
 public interface UserService {

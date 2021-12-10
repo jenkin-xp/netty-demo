@@ -23,8 +23,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         // ByteBuf buf = Unpooled.copiedBuffer("HelloServer".getBytes(CharsetUtil.UTF_8));
         StringMessage stringMessage = new StringMessage();
         UserLoginDTO userLoginDTO = new UserLoginDTO();
-        userLoginDTO.setUsername("hello");
-        userLoginDTO.setPassword("123");
+        userLoginDTO.setUsername("lisi");
+        userLoginDTO.setPassword("lisi123456");
         stringMessage.setBody(userLoginDTO);
         stringMessage.setMessageId((short) MessageIdEnum.LOGIN.getId());
         ctx.writeAndFlush(stringMessage);

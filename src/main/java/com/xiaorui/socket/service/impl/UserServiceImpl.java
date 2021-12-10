@@ -2,9 +2,9 @@ package com.xiaorui.socket.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xiaorui.socket.base.ErrorCode;
-import com.xiaorui.socket.base.ResponseDTO;
-import com.xiaorui.socket.base.User;
+import com.xiaorui.socket.base.exception.ErrorCode;
+import com.xiaorui.socket.base.vo.ResponseDTO;
+import com.xiaorui.socket.base.vo.User;
 import com.xiaorui.socket.dto.user.UserLoginDTO;
 import com.xiaorui.socket.entity.UserModel;
 import com.xiaorui.socket.mapper.UserMapper;

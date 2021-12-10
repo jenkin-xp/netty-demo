@@ -21,5 +21,26 @@ spring:
     url: jdbc:mysql://106.14.182.41:13306/ygame?useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true
     username: raysdba
     password: RaysDba2020!!
+
+  redis:
+    cluster:
+      nodes:
+        - 106.14.182.41:7000
+        - 106.14.182.41:7001
+        - 106.14.182.41:7002
+        - 106.14.182.41:7003
+        - 106.14.182.41:7004
+        - 106.14.182.41:7005
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 5
+        max-wait: 1
+        time-between-eviction-runs: 30000
+    timeout: 30000
+
 server:
-  port: 8888
+  port: 8091
+
+
