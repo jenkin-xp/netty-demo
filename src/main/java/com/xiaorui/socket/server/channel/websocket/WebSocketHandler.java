@@ -53,6 +53,16 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
             String body = new String(bodyByte);
             RequestVO requestVO = JSONObject.parseObject(body, RequestVO.class);
             consumer.consume(requestVO, ctx.channel());
+        } else if (msg instanceof ByteBuf) {
+            ByteBuf in = (ByteBuf) msg;
+            int length = in.readInt();
+            ByteBuf buf = in.readBytes(length);
+            byte[] bodyByte = new byte[length];
+            buf.readBytes(bodyByte);
+            String body = new String(bodyByte);
+            System.out.println("body: " + body);
+            RequestVO requestVO = JSONObject.parseObject(body, RequestVO.class);
+            consumer.consume(requestVO, ctx.channel());
         }
     }
 

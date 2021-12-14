@@ -15,4 +15,8 @@ public class RequestVO {
 
     private short messageId;
 
+    public RequestVO(String body, short messageId) {
+        this.body = body;
+        this.messageId = messageId;
+    }
 }

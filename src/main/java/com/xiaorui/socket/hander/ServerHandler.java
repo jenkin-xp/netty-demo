@@ -2,9 +2,9 @@ package com.xiaorui.socket.hander;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaorui.socket.base.vo.RequestVO;
-import com.xiaorui.socket.base.message.IMessage;
 import com.xiaorui.socket.base.network.customer.INetworkConsumer;
 import com.xiaorui.socket.base.network.listener.INetworkEventListener;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ChannelHandler.Sharable
-public class ServerHandler extends SimpleChannelInboundHandler<IMessage> {
+public class ServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final Logger log = LoggerFactory.getLogger(ServerHandler.class);
 
     @Autowired
@@ -31,13 +31,16 @@ public class ServerHandler extends SimpleChannelInboundHandler<IMessage> {
     /**
      * 读取消息
      * @param ctx
-     * @param message
+     * @param in
      * @throws Exception
      */
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, IMessage message)
+    public void channelRead0(ChannelHandlerContext ctx, ByteBuf in)
             throws Exception {
-        byte[] bodyByte = message.getBodyByte();
+        int length = in.readInt();
+        ByteBuf buf = in.readBytes(length);
+        byte[] bodyByte = new byte[buf.readableBytes()];
+        buf.readBytes(bodyByte);
         String body = new String(bodyByte);
         RequestVO requestVO = JSONObject.parseObject(body, RequestVO.class);
         consumer.consume(requestVO, ctx.channel());
@@ -53,7 +56,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<IMessage> {
         log.info("RemoteAddress : " + ctx.channel().remoteAddress() + " active !");
         // 建立连接的时候创建session
         networkEventListener.onConnected(ctx);
-        super.channelActive(ctx);
     }
 
 

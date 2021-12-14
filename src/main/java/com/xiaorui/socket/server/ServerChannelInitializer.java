@@ -38,11 +38,11 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast("encoder", new MessageEncoder());
-        pipeline.addLast("decoder", new MessageDecoder(MessageValue.MESSAGE_CODEC_MAX_FRAME_LENGTH,
-                MessageValue.MESSAGE_CODEC_LENGTH_FIELD_LENGTH, MessageValue.MESSAGE_CODEC_LENGTH_FIELD_OFFSET,
-                MessageValue.MESSAGE_CODEC_LENGTH_ADJUSTMENT, MessageValue.MESSAGE_CODEC_INITIAL_BYTES_TO_STRIP, false,
-                MessageValue.MESSAGE_TYPE_BYTE));
-        pipeline.addLast("handler", serverHandler);
+//        pipeline.addLast("decoder", new MessageDecoder(MessageValue.MESSAGE_CODEC_MAX_FRAME_LENGTH,
+//                MessageValue.MESSAGE_CODEC_LENGTH_FIELD_LENGTH, MessageValue.MESSAGE_CODEC_LENGTH_FIELD_OFFSET,
+//                MessageValue.MESSAGE_CODEC_LENGTH_ADJUSTMENT, MessageValue.MESSAGE_CODEC_INITIAL_BYTES_TO_STRIP, false,
+//                MessageValue.MESSAGE_TYPE_BYTE));
+//        pipeline.addLast("handler", serverHandler);
         pipeline.addLast("webSocketHandler", webSocketHandler);
     }
 
